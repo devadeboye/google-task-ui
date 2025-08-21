@@ -20,6 +20,51 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Code Quality and Formatting
+
+This project is configured with comprehensive code quality tools that automatically format and lint your code on save.
+
+### Available Scripts
+
+- `pnpm lint` - Check for linting errors and warnings
+- `pnpm lint:fix` - Automatically fix ESLint issues where possible
+- `pnpm format` - Format all code files using Prettier
+- `pnpm format:check` - Check if all files are properly formatted
+- `pnpm dev:format` - Format code and fix linting issues (useful before commits)
+
+### Automatic Formatting
+
+The project is configured with:
+
+- **Prettier** for consistent code formatting
+- **ESLint** with Next.js and TypeScript rules for code quality
+- **Format on Save** in VS Code (requires Prettier extension)
+- **Auto-fix on Save** for ESLint issues
+
+### VS Code Setup
+
+For the best development experience, install these VS Code extensions:
+
+- Prettier - Code formatter
+- ESLint
+- Tailwind CSS IntelliSense
+- TypeScript Importer
+
+The workspace settings are already configured to:
+
+- Format code on save
+- Fix ESLint issues on save
+- Organize imports on save
+- Use Prettier as the default formatter
+
+### Configuration Files
+
+- `.prettierrc` - Prettier formatting rules
+- `.prettierignore` - Files to exclude from formatting
+- `eslint.config.mjs` - ESLint rules and configuration
+- `.vscode/settings.json` - Workspace-specific VS Code settings
+- `.vscode/extensions.json` - Recommended extensions
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
