@@ -4,7 +4,7 @@ import InputBox from '../../../components/ui/InputBox';
 
 export default function LoginForm() {
   return (
-    <form action="" className="flex flex-col gap-4">
+    <form action="" className="flex flex-col gap-6">
       <InputBox
         label="Username"
         type="text"
