@@ -48,7 +48,6 @@ For the best development experience, install these VS Code extensions:
 - Prettier - Code formatter
 - ESLint
 - Tailwind CSS IntelliSense
-- TypeScript Importer
 
 The workspace settings are already configured to:
 
