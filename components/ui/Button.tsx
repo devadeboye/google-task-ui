@@ -17,14 +17,14 @@ export default function Button({
   ...buttonProps
 }: ButtonProps) {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    filled: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
-    outlined: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50',
-    text: 'text-blue-600 hover:bg-blue-50',
+    filled: 'bg-primary text-white hover:bg-primary/80 shadow-sm',
+    outlined: 'border-2 border-primary text-primary hover:bg-primary/10',
+    text: 'text-primary hover:bg-primary/10',
     elevated: 'bg-white text-gray-900 shadow-lg hover:shadow-xl',
-    tonal: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+    tonal: 'bg-primary/10 text-primary hover:bg-primary/20',
   };
 
   const sizes = {

@@ -11,9 +11,9 @@ export default function LoginForm() {
         id="username"
         name="username"
         placeholder="Username"
-        focusBorderColor="focus:border-blue-800"
-        focusRingColor="focus:ring-blue-800"
-        focusLabelColor="text-blue-800"
+        focusBorderColor="focus:border-primary"
+        focusRingColor="focus:ring-primary"
+        focusLabelColor="text-primary"
         defaultLabelColor="text-gray-800"
         borderColor="border-gray-500"
       />
@@ -25,20 +25,29 @@ export default function LoginForm() {
           id="password"
           name="password"
           placeholder="Password"
-          focusBorderColor="focus:border-blue-800"
-          focusRingColor="focus:ring-blue-800"
-          focusLabelColor="text-blue-800"
+          focusBorderColor="focus:border-primary"
+          focusRingColor="focus:ring-primary"
+          focusLabelColor="text-primary"
           defaultLabelColor="text-gray-800"
           borderColor="border-gray-500"
         />
-        {/* <Link href="/auth/register" className="text-blue-600">
-          forgot password?
-        </Link> */}
+        <div className="flex flex-row gap-2 items-center">
+          <span>Forgot password?</span>
+          <Link href="/auth/reset-password" className="text-primary">
+            Reset password
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-row-reverse gap-2 justify-between items-center">
-        <Button type="submit" label="Sign in" variant="filled" size="large" />
-        <Link href="/auth/register" className="text-blue-600">
+        <Button
+          type="submit"
+          label="Sign in"
+          variant="filled"
+          size="large"
+          className="rounded-3xl!"
+        />
+        <Link href="/auth/register" className="text-primary">
           create an account
         </Link>
       </div>

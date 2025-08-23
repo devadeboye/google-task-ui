@@ -11,9 +11,9 @@ export default function SignUpForm() {
         id="username"
         name="username"
         placeholder="Username"
-        focusBorderColor="focus:border-blue-800"
-        focusRingColor="focus:ring-blue-800"
-        focusLabelColor="text-blue-800"
+        focusBorderColor="focus:border-primary"
+        focusRingColor="focus:ring-primary"
+        focusLabelColor="text-primary"
         defaultLabelColor="text-gray-800"
         borderColor="border-gray-500"
       />
@@ -23,9 +23,9 @@ export default function SignUpForm() {
         id="password"
         name="password"
         placeholder="Password"
-        focusBorderColor="focus:border-blue-800"
-        focusRingColor="focus:ring-blue-800"
-        focusLabelColor="text-blue-800"
+        focusBorderColor="focus:border-primary"
+        focusRingColor="focus:ring-primary"
+        focusLabelColor="text-primary"
         defaultLabelColor="text-gray-800"
         borderColor="border-gray-500"
       />
@@ -36,9 +36,9 @@ export default function SignUpForm() {
           label="Sign up"
           variant="filled"
           size="large"
-          className=""
+          className="rounded-3xl!"
         />
-        <Link href="/auth/login" className="text-blue-600">
+        <Link href="/auth/login" className="text-primary">
           sign in
         </Link>
       </div>
