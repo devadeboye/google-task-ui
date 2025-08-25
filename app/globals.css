@@ -5,6 +5,9 @@
   --foreground: #171717;
   --surface-container: #f0f4f9;
   --primary: #0b57d0;
+  --tasks-surface-container-highest: #F7F9FD;
+  --subtle-black: #5f6368;
+  --nav-active: #c2e7ff;
 }
 
 @theme inline {
@@ -13,6 +16,9 @@
   --font-roboto: var(--font-roboto);
   --color-surface-container: var(--surface-container);
   --color-primary: var(--primary);
+  --color-tasks-surface-container-highest: var(--tasks-surface-container-highest);
+  --color-subtle-black: var(--subtle-black);
+  --color-nav-active: var(--nav-active);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,6 +28,7 @@
   }
 }
 
+/* landscape mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   .mobile-auth-layout {
     width: 100%;

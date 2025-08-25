@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
@@ -6,6 +6,10 @@ interface ButtonProps
   variant?: 'filled' | 'outlined' | 'text' | 'elevated' | 'tonal';
   size?: 'small' | 'medium' | 'large';
   onClick?: () => void;
+  icon?: ReactNode;
+  iconPosition?: 'left' | 'right';
+  textColor?: string;
+  fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
 }
 
 export default function Button({
@@ -14,17 +18,20 @@ export default function Button({
   size = 'medium',
   onClick,
   className = '',
+  icon,
+  iconPosition = 'left',
+  textColor = 'text-primary',
+  fontWeight = 'medium',
   ...buttonProps
 }: ButtonProps) {
-  const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`;
 
   const variants = {
     filled: 'bg-primary text-white hover:bg-primary/80 shadow-sm',
-    outlined: 'border-2 border-primary text-primary hover:bg-primary/10',
-    text: 'text-primary hover:bg-primary/10',
+    outlined: 'border-2 border-primary hover:bg-primary/10',
+    text: 'hover:bg-primary/10',
     elevated: 'bg-white text-gray-900 shadow-lg hover:shadow-xl',
-    tonal: 'bg-primary/10 text-primary hover:bg-primary/20',
+    tonal: 'bg-primary/10 hover:bg-primary/20',
   };
 
   const sizes = {
@@ -33,13 +40,30 @@ export default function Button({
     large: 'h-12 px-8 text-lg',
   };
 
+  // Determine text color - custom color takes precedence, then variant default, then fallback
+  const getTextColor = () => {
+    if (textColor) return textColor;
+
+    // For variants that don't specify text color, use a default
+    if (variant === 'filled') return 'text-white';
+    if (variant === 'elevated') return 'text-gray-900';
+
+    return ''; // Let variant handle the color
+  };
+
+  const iconClasses = icon ? 'gap-2' : '';
+  const flexDirection =
+    icon && iconPosition === 'right' ? 'flex-row-reverse' : '';
+
   return (
     <button
       onClick={onClick}
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${iconClasses} ${flexDirection} ${getTextColor()} ${className}`}
       {...buttonProps}
     >
+      {icon && iconPosition === 'left' && icon}
       {label}
+      {icon && iconPosition === 'right' && icon}
     </button>
   );
 }
