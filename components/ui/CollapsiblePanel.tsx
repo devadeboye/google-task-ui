@@ -24,7 +24,7 @@ export default function CollapsiblePanel({
     <div className={`${className}`}>
       <button
         onClick={togglePanel}
-        className="w-full px-4 py-3 text-left"
+        className="w-full h-8 px-4 text-left"
         aria-expanded={isOpen}
         aria-controls={`panel-${title.toLowerCase().replace(/\s+/g, '-')}`}
       >
@@ -37,16 +37,14 @@ export default function CollapsiblePanel({
           />
         </div>
       </button>
-      
+
       <div
         id={`panel-${title.toLowerCase().replace(/\s+/g, '-')}`}
         className={`overflow-hidden transition-all duration-200 ${
           isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="px-4">
-          {children}
-        </div>
+        <div className="px-4">{children}</div>
       </div>
     </div>
   );
