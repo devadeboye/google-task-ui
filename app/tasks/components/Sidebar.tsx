@@ -15,7 +15,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const { isOpen } = useMenuStore();
   return (
     <aside
-      className={`h-full bg-tasks-surface-container-highest px-3 flex flex-col gap-6 transition-all duration-300 ease-in-out ${className} ${isOpen ? 'translate-x-0 shadow-md/40' : '-translate-x-full'}`}
+      className={`h-full bg-tasks-surface-container-highest px-3 flex flex-col gap-6 transition-all duration-300 ease-in-out ${className} ${isOpen ? 'translate-x-0 shadow-md/40 md:shadow-none' : '-translate-x-full md:hidden'}`}
     >
       <div></div>
       <ExtendedFab
