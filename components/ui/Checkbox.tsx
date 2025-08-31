@@ -1,10 +1,10 @@
-import { Check } from "lucide-react";
+import { Check } from 'lucide-react';
 
 interface CheckboxProps {
   id: string;
 }
 
-export default function Checkbox({ id }: CheckboxProps) { 
+export default function Checkbox({ id }: CheckboxProps) {
   return (
     <div className="relative h-5">
       <input

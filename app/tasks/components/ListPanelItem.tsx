@@ -5,7 +5,7 @@ interface ListPanelItemProps {
   count: number;
 }
 
-export default function ListPanelItem({ title, count }: ListPanelItemProps) { 
+export default function ListPanelItem({ title, count }: ListPanelItemProps) {
   return (
     <div className="flex flex-row items-center gap-3 h-8 text-subtle-black justify-center">
       <Checkbox id={title.toLowerCase().replace(/\s+/g, '-')} />

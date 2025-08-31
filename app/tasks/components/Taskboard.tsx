@@ -1,9 +1,4 @@
 import { Circle, ListPlus } from 'lucide-react';
-import { Task } from '../../../lib/types/task.type';
-
-interface TaskboardProps {
-  tasks: Task[];
-}
 
 export default function Taskboard() {
   return (
