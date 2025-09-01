@@ -94,7 +94,7 @@ export const NEXTAUTH_CONFIG = {
  */
 async function refreshAccessToken(token: any) {
   try {
-    console.log('NextAuth: Refreshing access token...');
+
 
     const response = await fetch(
       `${AUTH_CONFIG.http.baseURL}${AUTH_CONFIG.service.endpoints.refresh}`,
@@ -115,7 +115,7 @@ async function refreshAccessToken(token: any) {
       throw refreshedTokens;
     }
 
-    console.log('NextAuth: Token refresh successful');
+
 
     return {
       ...token,

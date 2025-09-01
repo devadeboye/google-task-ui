@@ -98,6 +98,7 @@ export default function SignUpForm() {
           label="Sign up"
           variant="filled"
           size="large"
+          loading={isLoading}
           className="rounded-3xl!"
         />
         <Link href="/auth/login" className="text-primary">

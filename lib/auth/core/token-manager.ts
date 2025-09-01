@@ -137,7 +137,7 @@ export class TokenManager {
         throw new Error('No refresh callback or refresh token available');
       }
 
-      console.log('TokenManager: Refreshing access token...');
+
 
       const response = await this.refreshCallback(this.tokens.refreshToken);
 
@@ -150,7 +150,7 @@ export class TokenManager {
       this.setTokens(newTokens);
       this.processQueue(null, newTokens.accessToken);
 
-      console.log('TokenManager: Token refresh successful');
+
       return newTokens;
     } catch (error) {
       console.error('TokenManager: Token refresh failed:', error);

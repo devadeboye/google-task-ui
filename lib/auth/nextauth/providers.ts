@@ -14,10 +14,7 @@ let authManagerInstance: AuthManager | null = null;
 
 function getAuthManager(): AuthManager {
   if (!authManagerInstance) {
-    console.log('Creating new AuthManager instance');
     authManagerInstance = new AuthManager(AUTH_CONFIG);
-  } else {
-    console.log('Reusing existing AuthManager instance');
   }
   return authManagerInstance;
 }
@@ -49,7 +46,6 @@ export const authProviders = [
         // Use our auth manager to login
         const authResponse = await getAuthManager().login(validatedCredentials);
 
-        console.log("about to return user in NextAuth v5 format");
         // Return user in NextAuth v5 format
         return {
           id: authResponse.user.id,
@@ -62,14 +58,14 @@ export const authProviders = [
         };
       } catch (error: any) {
         console.error('NextAuth: Authorization failed:', error);
-        
+
         // If it's a validation error, we want to pass the details through
         if (error.issues && Array.isArray(error.issues)) {
           // Zod validation error - extract the first error message
           const firstError = error.issues[0];
           throw new Error(firstError.message);
         }
-        
+
         // For other errors, return null to trigger CredentialsSignin
         return null;
       }

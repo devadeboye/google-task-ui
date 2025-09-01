@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
+import Spinner from './Spinner';
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
@@ -10,6 +11,7 @@ interface ButtonProps
   iconPosition?: 'left' | 'right';
   textColor?: string;
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  loading?: boolean;
 }
 
 export default function Button({
@@ -22,6 +24,7 @@ export default function Button({
   iconPosition = 'left',
   textColor = 'text-primary',
   fontWeight = 'medium',
+  loading = false,
   ...buttonProps
 }: ButtonProps) {
   const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`;
@@ -55,15 +58,18 @@ export default function Button({
   const flexDirection =
     icon && iconPosition === 'right' ? 'flex-row-reverse' : '';
 
+  const displayIcon = loading ? <Spinner size="sm" /> : icon;
+
   return (
     <button
       onClick={onClick}
+      disabled={loading || buttonProps.disabled}
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${iconClasses} ${flexDirection} ${getTextColor()} ${className}`}
       {...buttonProps}
     >
-      {icon && iconPosition === 'left' && icon}
-      {label}
-      {icon && iconPosition === 'right' && icon}
+      {displayIcon && iconPosition === 'left' && displayIcon}
+      {loading ? 'Loading...' : label}
+      {displayIcon && iconPosition === 'right' && displayIcon}
     </button>
   );
 }

@@ -36,14 +36,14 @@ export class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      console.log('AuthService: Attempting login...');
+
 
       const response = await this.httpClient.post<AuthResponse>(
         this.config.endpoints.login,
         credentials
       );
 
-      console.log('AuthService: Login successful');
+
       return response.data;
     } catch (error: any) {
       console.error(
@@ -59,14 +59,14 @@ export class AuthService {
    */
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
-      console.log('AuthService: Attempting registration...');
+
 
       const response = await this.httpClient.post<AuthResponse>(
         this.config.endpoints.register,
         credentials
       );
 
-      console.log('AuthService: Registration successful');
+
       return response.data;
     } catch (error: any) {
       console.error(
@@ -82,14 +82,14 @@ export class AuthService {
    */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     try {
-      console.log('AuthService: Refreshing token...');
+
 
       const response = await this.httpClient.post<RefreshTokenResponse>(
         this.config.endpoints.refresh,
         { refreshToken }
       );
 
-      console.log('AuthService: Token refresh successful');
+
       return response.data;
     } catch (error: any) {
       console.error(
@@ -105,11 +105,11 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     try {
-      console.log('AuthService: Logging out...');
+
 
       await this.httpClient.post(this.config.endpoints.logout);
 
-      console.log('AuthService: Logout successful');
+
     } catch (error: any) {
       console.error(
         'AuthService: Logout failed:',
@@ -124,13 +124,13 @@ export class AuthService {
    */
   async getCurrentUser(): Promise<User> {
     try {
-      console.log('AuthService: Fetching current user...');
+
 
       const response = await this.httpClient.get<User>(
         this.config.endpoints.me
       );
 
-      console.log('AuthService: User fetched successfully');
+
       return response.data;
     } catch (error: any) {
       console.error(

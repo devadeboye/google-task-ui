@@ -31,8 +31,6 @@ export default function LoginForm() {
         redirect: false,
         callbackUrl,
       });
-      console.log(formData);
-      console.log(response);
 
       if (response?.error) {
         // Use the actual error message from NextAuth or fallback to generic message
@@ -47,7 +45,7 @@ export default function LoginForm() {
       router.push(callbackUrl);
       router.refresh();
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
       setError(new Error('An error occurred during login'));
     } finally {
       setIsLoading(false);
@@ -109,6 +107,7 @@ export default function LoginForm() {
           label="Sign in"
           variant="filled"
           size="large"
+          loading={isLoading}
           className="rounded-3xl!"
         />
         <Link href="/auth/register" className="text-primary">
