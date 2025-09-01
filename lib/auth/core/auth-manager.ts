@@ -47,9 +47,9 @@ export class AuthManager {
     // Initialize auth service with the HTTP client
     this.authService = new AuthService(this.httpClient, config.service);
 
-    // Now set up the refresh callback after everything is initialized
+    // Now set up the refresh callback on the SAME token manager instance
     // This prevents circular dependency issues during construction
-    this.tokenManager = new TokenManager(refreshToken =>
+    this.tokenManager.setRefreshCallback(refreshToken =>
       this.authService.refreshToken(refreshToken)
     );
   }

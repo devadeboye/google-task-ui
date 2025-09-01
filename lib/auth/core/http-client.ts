@@ -54,9 +54,22 @@ export class HttpClient {
     this.client.interceptors.request.use(
       async config => {
         const accessToken = this.tokenManager.getAccessToken();
+        const isExpired = this.tokenManager.isAccessTokenExpired();
 
-        if (accessToken && !this.tokenManager.isAccessTokenExpired()) {
+        console.log('HTTP Client Interceptor - accessToken:', !!accessToken);
+        console.log('HTTP Client Interceptor - isExpired:', isExpired);
+        console.log(
+          'HTTP Client Interceptor - will add header:',
+          !!(accessToken && !isExpired)
+        );
+
+        if (accessToken && !isExpired) {
           config.headers.Authorization = `Bearer ${accessToken}`;
+          console.log('HTTP Client Interceptor - Added Authorization header');
+        } else {
+          console.log(
+            'HTTP Client Interceptor - No Authorization header added'
+          );
         }
 
         return config;

@@ -10,13 +10,16 @@ import { AuthManager } from '../core/auth-manager';
 import { signInSchema } from '../utils/validation';
 
 // Lazy initialization to avoid circular dependencies during module loading
-let authManager: AuthManager | null = null;
+let authManagerInstance: AuthManager | null = null;
 
 function getAuthManager(): AuthManager {
-  if (!authManager) {
-    authManager = new AuthManager(AUTH_CONFIG);
+  if (!authManagerInstance) {
+    console.log('Creating new AuthManager instance');
+    authManagerInstance = new AuthManager(AUTH_CONFIG);
+  } else {
+    console.log('Reusing existing AuthManager instance');
   }
-  return authManager;
+  return authManagerInstance;
 }
 
 export const authProviders = [

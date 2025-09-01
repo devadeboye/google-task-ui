@@ -26,6 +26,15 @@ export class TokenManager {
   }
 
   /**
+   * Set refresh callback after construction
+   */
+  setRefreshCallback(
+    refreshCallback: (refreshToken: string) => Promise<RefreshTokenResponse>
+  ): void {
+    this.refreshCallback = refreshCallback;
+  }
+
+  /**
    * Set tokens
    */
   setTokens(tokens: AuthTokens): void {

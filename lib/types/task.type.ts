@@ -6,8 +6,10 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  completed: boolean;
+  isCompleted: boolean;
+  isStarred: boolean;
+  dueDate?: Date;
+  userId: string;
   createdAt: Date;
   updatedAt: Date;
-  userId: string;
 }
