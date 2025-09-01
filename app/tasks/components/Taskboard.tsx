@@ -1,14 +1,14 @@
 import { Circle, ListPlus } from 'lucide-react';
-import { Task } from '../../../lib/types/task.type';
+import { TaskList } from '../../../lib/types/task-list.type';
 
 interface TaskboardProps {
-  tasks: Task[];
+  taskList: TaskList;
 }
 
-export default function Taskboard() {
+export default function Taskboard({ taskList }: TaskboardProps) {
   return (
     <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-full">
-      <h2 className="text-lg">My Tasks</h2>
+      <h2 className="text-lg">{taskList.title}</h2>
 
       <div className="flex items-center gap-6 text-primary">
         <ListPlus />
@@ -16,18 +16,12 @@ export default function Taskboard() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-6">
-          <Circle size={20} />
-          <span>Task 1</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <Circle size={20} />
-          <span>Task 2</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <Circle size={20} />
-          <span>Task 3</span>
-        </div>
+        {taskList.tasks.map(task => (
+          <div className="flex items-center gap-6" key={task.id}>
+            <Circle size={20} />
+            <span>{task.title}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

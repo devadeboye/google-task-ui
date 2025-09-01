@@ -1,7 +1,7 @@
-import { CircleCheckBig, Star } from "lucide-react";
-import NavItem from "./NavItem";
+import { CircleCheckBig, Star } from 'lucide-react';
+import NavItem from './NavItem';
 
-export default function SidebarNav() { 
+export default function SidebarNav() {
   return (
     <ul className="flex flex-col gap-1">
       <NavItem

@@ -2,7 +2,8 @@
 
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface ExtendedFabProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
+interface ExtendedFabProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
   label: string;
   icon: ReactNode;
   onClick?: () => void;
@@ -20,12 +21,15 @@ export default function ExtendedFab({
   className = '',
   ...buttonProps
 }: ExtendedFabProps) {
-  const baseClasses = 'inline-flex items-center gap-3 rounded-2xl shadow-sm/35 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl active:shadow-md max-w-fit';
+  const baseClasses =
+    'inline-flex items-center gap-3 rounded-2xl shadow-sm/35 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl active:shadow-md max-w-fit';
 
   const variants = {
     primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
-    secondary: 'bg-surface-container text-on-surface hover:bg-surface-container-highest focus:ring-primary',
-    tertiary: 'bg-surface text-on-surface hover:bg-surface-container focus:ring-primary',
+    secondary:
+      'bg-surface-container text-on-surface hover:bg-surface-container-highest focus:ring-primary',
+    tertiary:
+      'bg-surface text-on-surface hover:bg-surface-container focus:ring-primary',
   };
 
   const sizes = {
