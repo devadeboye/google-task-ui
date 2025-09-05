@@ -1,4 +1,5 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
+import Spinner from './Spinner';
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
@@ -6,6 +7,11 @@ interface ButtonProps
   variant?: 'filled' | 'outlined' | 'text' | 'elevated' | 'tonal';
   size?: 'small' | 'medium' | 'large';
   onClick?: () => void;
+  icon?: ReactNode;
+  iconPosition?: 'left' | 'right';
+  textColor?: string;
+  fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  loading?: boolean;
 }
 
 export default function Button({
@@ -14,17 +20,21 @@ export default function Button({
   size = 'medium',
   onClick,
   className = '',
+  icon,
+  iconPosition = 'left',
+  textColor = 'text-primary',
+  fontWeight = 'medium',
+  loading = false,
   ...buttonProps
 }: ButtonProps) {
-  const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`;
 
   const variants = {
-    filled: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
-    outlined: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50',
-    text: 'text-blue-600 hover:bg-blue-50',
+    filled: 'bg-primary text-white hover:bg-primary/80 shadow-sm',
+    outlined: 'border-2 border-primary hover:bg-primary/10',
+    text: 'hover:bg-primary/10',
     elevated: 'bg-white text-gray-900 shadow-lg hover:shadow-xl',
-    tonal: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+    tonal: 'bg-primary/10 hover:bg-primary/20',
   };
 
   const sizes = {
@@ -33,13 +43,33 @@ export default function Button({
     large: 'h-12 px-8 text-lg',
   };
 
+  // Determine text color - custom color takes precedence, then variant default, then fallback
+  const getTextColor = () => {
+    if (textColor) return textColor;
+
+    // For variants that don't specify text color, use a default
+    if (variant === 'filled') return 'text-white';
+    if (variant === 'elevated') return 'text-gray-900';
+
+    return ''; // Let variant handle the color
+  };
+
+  const iconClasses = icon ? 'gap-2' : '';
+  const flexDirection =
+    icon && iconPosition === 'right' ? 'flex-row-reverse' : '';
+
+  const displayIcon = loading ? <Spinner size="sm" /> : icon;
+
   return (
     <button
       onClick={onClick}
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      disabled={loading || buttonProps.disabled}
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${iconClasses} ${flexDirection} ${getTextColor()} ${className}`}
       {...buttonProps}
     >
-      {label}
+      {displayIcon && iconPosition === 'left' && displayIcon}
+      {loading ? 'Loading...' : label}
+      {displayIcon && iconPosition === 'right' && displayIcon}
     </button>
   );
 }
