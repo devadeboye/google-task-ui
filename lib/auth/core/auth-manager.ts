@@ -4,7 +4,7 @@
  * It coordinates between the token manager, HTTP client, and auth service
  */
 
-import { AuthService, AuthServiceConfig } from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import {
   AuthResponse,
   AuthState,
@@ -18,7 +18,6 @@ import { TokenManager } from './token-manager';
 
 export interface AuthManagerConfig {
   http: HttpClientConfig;
-  service: AuthServiceConfig;
 }
 
 export class AuthManager {
@@ -45,7 +44,7 @@ export class AuthManager {
     this.httpClient = new HttpClient(config.http, this.tokenManager);
 
     // Initialize auth service with the HTTP client
-    this.authService = new AuthService(this.httpClient, config.service);
+    this.authService = new AuthService(this.httpClient);
 
     // Now set up the refresh callback on the SAME token manager instance
     // This prevents circular dependency issues during construction

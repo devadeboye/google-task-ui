@@ -1,8 +1,4 @@
-/**
- * Authentication Service
- * Clean, simple API for auth operations
- */
-
+import { API_CONFIG } from '../../config/api.config';
 import { HttpClient } from '../core/http-client';
 import {
   AuthResponse,
@@ -12,32 +8,17 @@ import {
   User,
 } from '../types/auth.types';
 
-export interface AuthServiceConfig {
-  endpoints: {
-    login: string;
-    register: string;
-    refresh: string;
-    logout: string;
-    me: string;
-  };
-}
-
 export class AuthService {
   private httpClient: HttpClient;
-  private config: AuthServiceConfig;
 
-  constructor(httpClient: HttpClient, config: AuthServiceConfig) {
+  constructor(httpClient: HttpClient) {
     this.httpClient = httpClient;
-    this.config = config;
   }
 
-  /**
-   * Login user
-   */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       const response = await this.httpClient.post<AuthResponse>(
-        this.config.endpoints.login,
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`,
         credentials
       );
 
@@ -51,13 +32,10 @@ export class AuthService {
     }
   }
 
-  /**
-   * Register user
-   */
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
       const response = await this.httpClient.post<AuthResponse>(
-        this.config.endpoints.register,
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`,
         credentials
       );
 
@@ -71,13 +49,10 @@ export class AuthService {
     }
   }
 
-  /**
-   * Refresh access token
-   */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     try {
       const response = await this.httpClient.post<RefreshTokenResponse>(
-        this.config.endpoints.refresh,
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`,
         { refreshToken }
       );
 
@@ -91,12 +66,11 @@ export class AuthService {
     }
   }
 
-  /**
-   * Logout user
-   */
   async logout(): Promise<void> {
     try {
-      await this.httpClient.post(this.config.endpoints.logout);
+      await this.httpClient.post(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`
+      );
     } catch (error: any) {
       console.error(
         'AuthService: Logout failed:',
@@ -106,13 +80,10 @@ export class AuthService {
     }
   }
 
-  /**
-   * Get current user
-   */
   async getCurrentUser(): Promise<User> {
     try {
       const response = await this.httpClient.get<User>(
-        this.config.endpoints.me
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.ME}`
       );
 
       return response.data;

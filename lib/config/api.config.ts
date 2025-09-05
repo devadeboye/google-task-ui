@@ -7,7 +7,9 @@ export const API_CONFIG = {
       REFRESH: '/auth/refresh',
       LOGOUT: '/auth/logout',
       ME: '/auth/me',
+      ERROR: '/auth/error',
     },
+
     TASK_LIST: {
       GET: '/task-list',
       CREATE: '/task-list',
