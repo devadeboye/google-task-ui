@@ -1,34 +1,32 @@
 import Checkbox from '@/components/ui/Checkbox';
-import { useTaskListFilterStore } from '../../../lib/stores/taskListFilterStore';
+import { useToggleTaskListActive } from '../../../lib/hooks/use-task-list';
+import { TaskList } from '../../../lib/types/task-list.type';
 
 interface ListPanelItemProps {
-  id: string;
-  title: string;
+  list: TaskList;
   count: number;
 }
 
-export default function ListPanelItem({
-  id,
-  title,
-  count,
-}: ListPanelItemProps) {
-  const toggleTaskList = useTaskListFilterStore(state => state.toggleTaskList);
-  const isChecked = useTaskListFilterStore(state =>
-    state.selectedTaskListIds.has(id)
-  );
+export default function ListPanelItem({ list, count }: ListPanelItemProps) {
+  const toggleMutation = useToggleTaskListActive();
 
   const handleToggle = () => {
-    toggleTaskList(id);
+    toggleMutation.mutate({
+      id: list.id,
+      title: list.title,
+      isActive: !list.isActive,
+    });
   };
 
   return (
     <div className="flex flex-row items-center gap-3 h-8 text-subtle-black justify-center">
       <Checkbox
-        id={`tasklist-${id}`}
-        checked={isChecked}
+        id={`tasklist-${list.id}`}
+        checked={list.isActive}
         onChange={handleToggle}
+        disabled={toggleMutation.isPending}
       />
-      <span className="text-sm font-medium flex-1">{title}</span>
+      <span className="text-sm font-medium flex-1">{list.title}</span>
       <span className="text-xs font-medium">{count}</span>
     </div>
   );

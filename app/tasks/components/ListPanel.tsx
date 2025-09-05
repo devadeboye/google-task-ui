@@ -20,8 +20,7 @@ export default function ListPanel() {
         {taskLists?.map(taskList => (
           <ListPanelItem
             key={taskList.id}
-            id={taskList.id}
-            title={taskList.title}
+            list={taskList}
             count={taskList.tasks.length}
           />
         ))}

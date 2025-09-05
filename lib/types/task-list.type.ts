@@ -9,6 +9,9 @@ export interface TaskList {
     email: string;
   };
   tasks: Task[];
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type UpdateTaskListDto = Pick<TaskList, 'id' | 'title' | 'isActive'>;

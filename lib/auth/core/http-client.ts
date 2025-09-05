@@ -56,8 +56,6 @@ export class HttpClient {
         const accessToken = this.tokenManager.getAccessToken();
         const isExpired = this.tokenManager.isAccessTokenExpired();
 
-
-
         if (accessToken && !isExpired) {
           config.headers.Authorization = `Bearer ${accessToken}`;
         } else {
@@ -137,6 +135,14 @@ export class HttpClient {
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.client.put<T>(url, data, config);
+  }
+
+  async patch<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<T>> {
+    return this.client.patch<T>(url, data, config);
   }
 
   /**

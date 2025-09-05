@@ -36,13 +36,10 @@ export class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-
-
       const response = await this.httpClient.post<AuthResponse>(
         this.config.endpoints.login,
         credentials
       );
-
 
       return response.data;
     } catch (error: any) {
@@ -59,13 +56,10 @@ export class AuthService {
    */
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
-
-
       const response = await this.httpClient.post<AuthResponse>(
         this.config.endpoints.register,
         credentials
       );
-
 
       return response.data;
     } catch (error: any) {
@@ -82,13 +76,10 @@ export class AuthService {
    */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     try {
-
-
       const response = await this.httpClient.post<RefreshTokenResponse>(
         this.config.endpoints.refresh,
         { refreshToken }
       );
-
 
       return response.data;
     } catch (error: any) {
@@ -105,11 +96,7 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     try {
-
-
       await this.httpClient.post(this.config.endpoints.logout);
-
-
     } catch (error: any) {
       console.error(
         'AuthService: Logout failed:',
@@ -124,12 +111,9 @@ export class AuthService {
    */
   async getCurrentUser(): Promise<User> {
     try {
-
-
       const response = await this.httpClient.get<User>(
         this.config.endpoints.me
       );
-
 
       return response.data;
     } catch (error: any) {
