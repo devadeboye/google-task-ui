@@ -3,32 +3,14 @@
  * Centralized config for the auth system
  */
 
+import { API_CONFIG } from '../../config/api.config';
 import { AuthManagerConfig } from '../core/auth-manager';
-
-// Get API URL from environment
-const getApiUrl = (): string => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    console.warn('NEXT_PUBLIC_API_URL not defined, using localhost:4000');
-    return 'http://localhost:4000';
-  }
-  return apiUrl;
-};
 
 export const AUTH_CONFIG: AuthManagerConfig = {
   http: {
-    baseURL: getApiUrl(),
+    baseURL: API_CONFIG.BASE_URL!,
     timeout: 10000,
     withCredentials: true,
-  },
-  service: {
-    endpoints: {
-      login: '/auth/login',
-      register: '/auth/register',
-      refresh: '/auth/refresh',
-      logout: '/auth/logout',
-      me: '/auth/me',
-    },
   },
 };
 
@@ -39,8 +21,8 @@ export const NEXTAUTH_CONFIG = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
+    signIn: API_CONFIG.ENDPOINTS.AUTH.LOGIN,
+    error: API_CONFIG.ENDPOINTS.AUTH.ERROR,
   },
   callbacks: {
     // JWT callback - handle token refresh
@@ -94,10 +76,8 @@ export const NEXTAUTH_CONFIG = {
  */
 async function refreshAccessToken(token: any) {
   try {
-
-
     const response = await fetch(
-      `${AUTH_CONFIG.http.baseURL}${AUTH_CONFIG.service.endpoints.refresh}`,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`,
       {
         method: 'POST',
         headers: {
@@ -114,8 +94,6 @@ async function refreshAccessToken(token: any) {
     if (!response.ok) {
       throw refreshedTokens;
     }
-
-
 
     return {
       ...token,
