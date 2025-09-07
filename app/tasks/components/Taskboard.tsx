@@ -19,12 +19,16 @@ export default function Taskboard({ taskList }: TaskboardProps) {
       <div className="flex flex-col gap-2">
         {taskList.tasks.length === 0 && (
           <div className="flex flex-col items-center justify-center w-4/5 lg:w-1/2 m-auto text-center gap-4">
-            <Image
-              src="/asset/images/no_task.png"
-              alt="No tasks"
-              width={100}
-              height={100}
-            />
+            <div className="relative w-32 h-32">
+              <Image
+                src="/asset/images/no_task.png"
+                alt="No tasks"
+                fill
+                sizes="128px"
+                priority
+                className="object-contain"
+              />
+            </div>
             <div className="text-lg">No tasks yet</div>
             <p className="text-sm">
               Add your to-dos and keep track of them across Devices
