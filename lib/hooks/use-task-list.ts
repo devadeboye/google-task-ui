@@ -41,6 +41,25 @@ export const useTaskList = () => {
   return { data: taskList, isLoading, error };
 };
 
+export const useCreateTaskList = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (title: string) => {
+      const response = await authManager()
+        .getHttpClient()
+        .post(API_CONFIG.ENDPOINTS.TASK_LIST.CREATE, {
+          title,
+        });
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch task lists after successful creation
+      queryClient.invalidateQueries({ queryKey: taskListKeys.all });
+    },
+  });
+};
+
 export const useToggleTaskListActive = () => {
   const queryClient = useQueryClient();
 

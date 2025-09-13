@@ -1,4 +1,10 @@
-import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+'use client';
+
+import {
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { authManager } from '../auth/nextauth/providers';

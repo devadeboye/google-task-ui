@@ -4,6 +4,7 @@ import { PlusIcon } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import ExtendedFab from '../../../components/ui/ExtendedFab';
 import { useMenuStore } from '../../../lib/stores/menuStore';
+import { useModalStore } from '../../../lib/stores/modalStore';
 import ListPanel from './ListPanel';
 import SidebarNav from './SidebarNav';
 
@@ -13,6 +14,7 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isOpen } = useMenuStore();
+  const { openCreateTaskListModal } = useModalStore();
 
   return (
     <aside
@@ -36,6 +38,7 @@ export default function Sidebar({ className }: SidebarProps) {
         textColor="text-black"
         fontWeight="normal"
         icon={<PlusIcon />}
+        onClick={openCreateTaskListModal}
       />
     </aside>
   );
