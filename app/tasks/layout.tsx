@@ -16,9 +16,14 @@ export default function TasksLayout({
   const createTaskListMutation = useCreateTaskList();
 
   const handleCreateList = (title: string) => {
+    // Close modal immediately for better UX (optimistic)
+    closeCreateTaskListModal();
+
     createTaskListMutation.mutate(title, {
-      onSuccess: () => {
-        closeCreateTaskListModal();
+      onError: () => {
+        // If creation fails, reopen modal to show error
+        // Note: You might want to show a toast/alert instead
+        console.error('Failed to create task list');
       },
     });
   };
