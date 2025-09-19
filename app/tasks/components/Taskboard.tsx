@@ -8,7 +8,7 @@ interface TaskboardProps {
 
 export default function Taskboard({ taskList }: TaskboardProps) {
   return (
-    <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-full h-fit break-inside-avoid mb-8">
+    <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-full h-fit break-inside-avoid mb-8 shadow-xs/5 hover:shadow-sm/35 transition-all duration-300 ease-in-out">
       <div className="flex flex-row items-center justify-between">
         <h2 className="text-lg">{taskList.title}</h2>
         <MoreVertical size={18} />
