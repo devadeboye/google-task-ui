@@ -41,6 +41,80 @@ export const useTaskList = () => {
   return { data: taskList, isLoading, error };
 };
 
+export const useCreateTaskList = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (title: string) => {
+      const response = await authManager()
+        .getHttpClient()
+        .post(API_CONFIG.ENDPOINTS.TASK_LIST.CREATE, {
+          title,
+        });
+      return response.data;
+    },
+
+    onMutate: async (title: string) => {
+      // Cancel any outgoing refetches (so they don't overwrite optimistic update)
+      await queryClient.cancelQueries({ queryKey: taskListKeys.all });
+      // Snapshot the previous value for rollback
+      const previousTaskLists = queryClient.getQueryData<TaskList[]>(
+        taskListKeys.all
+      );
+
+      // Create optimistic task list
+      const now = new Date();
+      const optimisticTaskList: TaskList = {
+        id: `temp-${Date.now()}`, // Temporary ID
+        title: title.trim(),
+        isActive: true,
+        tasks: [],
+        user: {
+          id: 'temp-user',
+          username: 'Current User',
+          email: 'user@example.com',
+        },
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      // Optimistically update the cache
+      queryClient.setQueryData<TaskList[]>(taskListKeys.all, oldData => {
+        if (!oldData) return [optimisticTaskList];
+        return [...oldData, optimisticTaskList];
+      });
+
+      // Return context for potential rollback
+      return { previousTaskLists, optimisticTaskList };
+    },
+
+    // On success, invalidate to get real data from server
+    onSuccess: (data, variables, context) => {
+      // Remove the optimistic item and replace with real data
+      queryClient.setQueryData<TaskList[]>(taskListKeys.all, oldData => {
+        if (!oldData) return [data];
+        return oldData.map(item =>
+          item.id === context?.optimisticTaskList.id ? data : item
+        );
+      });
+
+      queryClient.invalidateQueries({ queryKey: taskListKeys.all });
+    },
+
+    // On error, rollback the optimistic update
+    onError: (error, variables, context) => {
+      if (context?.previousTaskLists) {
+        queryClient.setQueryData(taskListKeys.all, context.previousTaskLists);
+      }
+    },
+
+    // refetch after error or success to ensure consistency
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: taskListKeys.all });
+    },
+  });
+};
+
 export const useToggleTaskListActive = () => {
   const queryClient = useQueryClient();
 
@@ -54,17 +128,12 @@ export const useToggleTaskListActive = () => {
       return response.data;
     },
 
-    // Optimistic update: Update UI immediately before API call
     onMutate: async ({ id, isActive }: UpdateTaskListDto) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: taskListKeys.all });
-
-      // Snapshot the previous value for rollback
       const previousTaskLists = queryClient.getQueryData<TaskList[]>(
         taskListKeys.all
       );
 
-      // Optimistically update the cache
       queryClient.setQueryData<TaskList[]>(taskListKeys.all, oldData => {
         if (!oldData) return oldData;
 
@@ -75,23 +144,19 @@ export const useToggleTaskListActive = () => {
         );
       });
 
-      // Return context with previous data for potential rollback
       return { previousTaskLists };
     },
 
-    // On success, invalidate to sync with server (optional, since we already updated optimistically)
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskListKeys.all });
     },
 
-    // On error, rollback the optimistic update
     onError: (error, variables, context) => {
       if (context?.previousTaskLists) {
         queryClient.setQueryData(taskListKeys.all, context.previousTaskLists);
       }
     },
 
-    // Always refetch after error or success to ensure consistency
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: taskListKeys.all });
     },

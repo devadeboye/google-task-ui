@@ -27,7 +27,7 @@ export default function Button({
   loading = false,
   ...buttonProps
 }: ButtonProps) {
-  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`;
+  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-gray-700 disabled:font-normal`;
 
   const variants = {
     filled: 'bg-primary text-white hover:bg-primary/80 shadow-sm',

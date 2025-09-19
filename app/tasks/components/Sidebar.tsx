@@ -1,12 +1,10 @@
 'use client';
 
-import Spinner from '@/components/ui/Spinner';
 import { PlusIcon } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Button from '../../../components/ui/Button';
 import ExtendedFab from '../../../components/ui/ExtendedFab';
 import { useMenuStore } from '../../../lib/stores/menuStore';
+import { useModalStore } from '../../../lib/stores/modalStore';
 import ListPanel from './ListPanel';
 import SidebarNav from './SidebarNav';
 
@@ -16,22 +14,7 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isOpen } = useMenuStore();
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Spinner className="text-gray-500" />
-      </div>
-    );
-  }
-
-  // Handle authentication
-  if (!session) {
-    router.push('/auth/login');
-    return null;
-  }
+  const { openCreateTaskListModal } = useModalStore();
 
   return (
     <aside
@@ -55,6 +38,7 @@ export default function Sidebar({ className }: SidebarProps) {
         textColor="text-black"
         fontWeight="normal"
         icon={<PlusIcon />}
+        onClick={openCreateTaskListModal}
       />
     </aside>
   );
