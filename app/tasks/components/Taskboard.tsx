@@ -1,4 +1,4 @@
-import { Circle, ListPlus } from 'lucide-react';
+import { Circle, ListPlus, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import { TaskList } from '../../../lib/types/task-list.type';
 
@@ -8,8 +8,11 @@ interface TaskboardProps {
 
 export default function Taskboard({ taskList }: TaskboardProps) {
   return (
-    <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-full h-fit">
-      <h2 className="text-lg">{taskList.title}</h2>
+    <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-full h-fit break-inside-avoid mb-8">
+      <div className="flex flex-row items-center justify-between">
+        <h2 className="text-lg">{taskList.title}</h2>
+        <MoreVertical size={18} />
+      </div>
 
       <div className="flex items-center gap-6 text-primary">
         <ListPlus />

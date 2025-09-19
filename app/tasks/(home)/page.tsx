@@ -30,7 +30,7 @@ export default function TasksPage() {
 
   return (
     <main
-      className={`flex flex-col gap-6 p-6 md:grid ${isOpen ? 'md:grid-cols-1 lg:grid-cols-2' : 'md:grid-cols-2 xl:grid-cols-3'}`}
+      className={`p-6 ${isOpen ? 'md:columns-1 lg:columns-2' : 'md:columns-2 xl:columns-3'} gap-6`}
     >
       {filteredTaskLists.length === 0 ? (
         <div className="text-gray-500 p-6">No active task lists</div>
