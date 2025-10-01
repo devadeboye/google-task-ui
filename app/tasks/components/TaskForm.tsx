@@ -1,5 +1,6 @@
-import { Circle, MoreVertical, Star } from "lucide-react";
-import { useState } from "react";
+import IconButton from '@/components/ui/IconButton';
+import { Circle, MoreVertical, Star } from 'lucide-react';
+import { useState } from 'react';
 
 export default function TaskForm() {
   const [isFocused, setIsFocused] = useState(false);
@@ -36,12 +37,12 @@ export default function TaskForm() {
         <div className="flex items-center gap-2 h-full">
           {(isFocused || isHovered) && (
             <div className="animate-in fade-in-0 zoom-in-95 duration-200">
-              <MoreVertical size={18} />
+              <IconButton icon={<MoreVertical size={18} />} />
             </div>
           )}
-          {(isHovered && !isFocused) && (
+          {isHovered && !isFocused && (
             <div className="animate-in fade-in-0 zoom-in-95 duration-200">
-              <Star size={18} />
+              <IconButton icon={<Star size={18} />} />
             </div>
           )}
         </div>
