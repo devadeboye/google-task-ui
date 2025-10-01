@@ -8,6 +8,7 @@
   --tasks-surface-container-highest: #f7f9fd;
   --subtle-black: #5f6368;
   --nav-active: #c2e7ff;
+  --focus: #EDF1F8;
 }
 
 @theme inline {
@@ -21,6 +22,7 @@
   );
   --color-subtle-black: var(--subtle-black);
   --color-nav-active: var(--nav-active);
+  --color-focus: var(--focus);
 }
 
 @media (prefers-color-scheme: dark) {
