@@ -19,7 +19,7 @@ export default function TaskForm() {
       onMouseOut={() => setIsHovered(false)}
     >
       <div className="flex gap-6">
-        <Circle size={20} />
+        <Circle size={20} className="flex-shrink-0" />
         <textarea
           className="placeholder:text-md text-md placeholder:text-black placeholder:font-light font-normal w-full focus:outline-none resize-none"
           placeholder="Title"
@@ -34,15 +34,15 @@ export default function TaskForm() {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
-        <div className="flex items-end gap-2 h-full">
+        <div className="relative flex items-end gap-2">
           {(isFocused || isHovered) && (
-            <div className="animate-in fade-in-0 zoom-in-95 duration-200">
-              <IconButton icon={<MoreVertical size={18} />} />
+            <div className="absolute right-0 animate-in fade-in-0 zoom-in-95 duration-200 h-6">
+              <IconButton icon={<MoreVertical size={18} />} size="small" />
             </div>
           )}
           {isHovered && !isFocused && (
-            <div className="animate-in fade-in-0 zoom-in-95 duration-200">
-              <IconButton icon={<Star size={18} />} />
+            <div className="absolute right-10 animate-in fade-in-0 zoom-in-95 duration-200 h-6">
+              <IconButton icon={<Star size={18} />} size="small" />
             </div>
           )}
         </div>

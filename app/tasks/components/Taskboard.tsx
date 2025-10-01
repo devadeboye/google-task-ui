@@ -1,3 +1,4 @@
+import IconButton from '@/components/ui/IconButton';
 import { Circle, ListPlus, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import { TaskList } from '../../../lib/types/task-list.type';
@@ -12,7 +13,7 @@ export default function Taskboard({ taskList }: TaskboardProps) {
     <div className="flex flex-col gap-4 bg-white py-4 rounded-2xl w-full h-fit break-inside-avoid mb-8 shadow-xs/5 hover:shadow-sm/35 transition-all duration-300 ease-in-out">
       <div className="flex flex-row items-center justify-between px-4">
         <h2 className="text-lg">{taskList.title}</h2>
-        <MoreVertical size={18} />
+        <IconButton icon={<MoreVertical size={18} />} size="small" />
       </div>
 
       <div className="flex items-center gap-6 text-primary px-4">
