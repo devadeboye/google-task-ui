@@ -48,6 +48,7 @@ export default function IconButton({
       disabled={disabled}
       type="button"
       aria-label="Icon button"
+      tabIndex={-1}
     >
       {icon}
     </button>

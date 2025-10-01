@@ -15,8 +15,6 @@ export default function TaskForm() {
     <form
       onSubmit={handleSubmit}
       className={`flex flex-col gap-2 ${isFocused ? 'bg-focus' : 'hover:bg-focus'} w-full h-fit transition-all duration-300 ease-in-out px-4 py-2`}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
     >
@@ -33,8 +31,10 @@ export default function TaskForm() {
             minHeight: '1.5rem',
             maxHeight: '6rem',
           }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
-        <div className="flex items-center gap-2 h-full">
+        <div className="flex items-end gap-2 h-full">
           {(isFocused || isHovered) && (
             <div className="animate-in fade-in-0 zoom-in-95 duration-200">
               <IconButton icon={<MoreVertical size={18} />} />
@@ -60,6 +60,8 @@ export default function TaskForm() {
             minHeight: '1.5rem',
             maxHeight: '6rem',
           }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         ></textarea>
       </div>
     </form>
