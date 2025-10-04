@@ -12,6 +12,7 @@ interface ButtonProps
   textColor?: string;
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold';
   loading?: boolean;
+  iconGap?: string;
 }
 
 export default function Button({
@@ -25,9 +26,10 @@ export default function Button({
   textColor = 'text-primary',
   fontWeight = 'medium',
   loading = false,
+  iconGap = 'gap-2',
   ...buttonProps
 }: ButtonProps) {
-  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-gray-700 disabled:font-normal`;
+  const baseClasses = `inline-flex items-center justify-center font-${fontWeight} rounded-lg transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:text-gray-700 disabled:font-normal`;
 
   const variants = {
     filled: 'bg-primary text-white hover:bg-primary/80 shadow-sm',
@@ -54,7 +56,7 @@ export default function Button({
     return ''; // Let variant handle the color
   };
 
-  const iconClasses = icon ? 'gap-2' : '';
+  const iconClasses = icon ? iconGap : '';
   const flexDirection =
     icon && iconPosition === 'right' ? 'flex-row-reverse' : '';
 
