@@ -1,7 +1,15 @@
 import IconButton from '@/components/ui/IconButton';
-import { AlignLeft, Circle, MoreVertical, Star } from 'lucide-react';
+import {
+  AlignLeft,
+  CalendarPlus,
+  Circle,
+  MoreVertical,
+  Repeat2,
+  Star,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import Chip from '../../../components/ui/Chip';
 import { Task } from '../../../lib/types/task.type';
 
 interface TaskFormProps {
@@ -24,6 +32,9 @@ export default function TaskForm({
   const [isHovered, setIsHovered] = useState(false);
   const [titleFocused, setTitleFocused] = useState(focused);
   const [detailsFocused, setDetailsFocused] = useState(false);
+  const [isDueToday, setIsDueToday] = useState(false);
+  const [isDueTomorrow, setIsDueTomorrow] = useState(false);
+  const [isDueLater, setIsDueLater] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
   // Form state
@@ -131,6 +142,46 @@ export default function TaskForm({
             setDetailsFocused(false);
           }}
         ></textarea>
+      </div>
+
+      {/* Time */}
+      <div className="flex gap-2 pl-11 items-center justify-between">
+        <div className="flex gap-2">
+          <Chip
+            variant="outlined"
+            size="small"
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300' : ''}`}
+            selected={isDueToday}
+            onClick={() => setIsDueToday(true)}
+            onDelete={isDueToday ? () => setIsDueToday(false) : undefined}
+          >
+            <span>Today</span>
+          </Chip>
+
+          <Chip
+            variant="outlined"
+            size="small"
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300' : ''}`}
+            selected={isDueTomorrow}
+            onClick={() => setIsDueTomorrow(true)}
+            onDelete={isDueTomorrow ? () => setIsDueTomorrow(false) : undefined}
+          >
+            <span>Tomorrow</span>
+          </Chip>
+
+          <Chip
+            variant="outlined"
+            size="small"
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300' : ''}`}
+            selected={isDueLater}
+            onClick={() => setIsDueLater(true)}
+            onDelete={isDueLater ? () => setIsDueLater(false) : undefined}
+          >
+            <CalendarPlus size={18} />
+          </Chip>
+        </div>
+
+        <IconButton icon={<Repeat2 size={20} color="black" />} size="medium" />
       </div>
     </form>
   );
