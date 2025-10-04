@@ -1,24 +1,47 @@
 import IconButton from '@/components/ui/IconButton';
-import { Circle, MoreVertical, Star } from 'lucide-react';
+import { AlignLeft, Circle, MoreVertical, Star } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+
+import { Task } from '../../../lib/types/task.type';
 
 interface TaskFormProps {
   focused: boolean;
   onCancel: () => void;
+  task?: Task; // Optional task for edit mode
+  mode?: 'create' | 'edit';
+  className?: string;
+  onSave?: (taskData: { title: string; details: string }) => void;
 }
 
 export default function TaskForm({
   focused = false,
   onCancel = () => {},
+  task,
+  mode = 'create',
+  onSave = () => {},
+  className = '',
 }: TaskFormProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [titleFocused, setTitleFocused] = useState(focused);
   const [detailsFocused, setDetailsFocused] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
+  // Form state
+  const [formData, setFormData] = useState({
+    title: task?.title || '',
+    details: task?.description || '',
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(e.target);
+    if (formData.title.trim()) {
+      onSave(formData);
+      setFormData({ title: '', details: '' });
+    }
+  };
+
+  const handleInputChange = (field: 'title' | 'details', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   // Auto-focus title textarea when form appears
@@ -42,10 +65,11 @@ export default function TaskForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex flex-col gap-2 ${focused ? 'bg-focus' : 'hover:bg-focus'} w-full h-fit transition-all duration-300 ease-in-out px-4 py-2`}
+      className={`flex flex-col gap-2 ${focused ? 'bg-focus' : 'hover:bg-focus'} w-full h-fit transition-all duration-300 ease-in-out py-2 ${className}`}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
     >
+      {/* Title */}
       <div className="flex gap-6">
         <Circle size={20} className="flex-shrink-0" />
         <textarea
@@ -55,19 +79,21 @@ export default function TaskForm({
           id="title"
           name="title"
           rows={1}
+          value={formData.title}
+          onChange={e => handleInputChange('title', e.target.value)}
           style={{
-            fieldSizing: 'content',
+            ['fieldSizing' as any]: 'content',
             minHeight: '1.5rem',
             maxHeight: '6rem',
           }}
           onFocus={() => {
-            // setIsFocused(true);
             setTitleFocused(true);
           }}
           onBlur={() => {
             setTitleFocused(false);
           }}
         />
+
         <div className="relative flex items-end gap-2">
           {(titleFocused || detailsFocused || isHovered) && (
             <div className="absolute right-0 animate-in fade-in-0 zoom-in-95 duration-200 h-6">
@@ -82,20 +108,23 @@ export default function TaskForm({
         </div>
       </div>
 
+      {/* Details */}
       <div className="flex gap-2 pl-11">
+        <AlignLeft size={18} className="flex-shrink-0" />
         <textarea
           className="placeholder:text-xs text-xs placeholder:text-black placeholder:font-light font-light w-full focus:outline-none resize-none"
           placeholder="Details"
           id="details"
           name="details"
           rows={1}
+          value={formData.details}
+          onChange={e => handleInputChange('details', e.target.value)}
           style={{
-            fieldSizing: 'content',
+            ['fieldSizing' as any]: 'content',
             minHeight: '1.5rem',
             maxHeight: '6rem',
           }}
           onFocus={() => {
-            // setIsFocused(true);
             setDetailsFocused(true);
           }}
           onBlur={() => {
