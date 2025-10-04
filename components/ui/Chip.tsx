@@ -28,7 +28,8 @@ export default function Chip({
   className = '',
   'aria-label': ariaLabel,
 }: ChipProps) {
-  const baseClasses = 'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-0';
+  const baseClasses =
+    'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0';
   
   const variantClasses = {
     filled: selected
@@ -72,7 +73,7 @@ export default function Chip({
       className={classes}
       onClick={disabled ? undefined : onClick}
       role={onClick ? 'button' : undefined}
-      tabIndex={onClick && !disabled ? 0 : -1}
+      tabIndex={-1}
       aria-label={ariaLabel}
       aria-pressed={selected}
       aria-disabled={disabled}
@@ -82,19 +83,19 @@ export default function Chip({
           {leadingIcon}
         </span>
       )}
-      
+
       <span className="flex-1 truncate">{children}</span>
-      
+
       {trailingIcon && !onDelete && (
         <span className={`${iconClasses} ml-1 flex-shrink-0`}>
           {trailingIcon}
         </span>
       )}
-      
+
       {onDelete && (
         <button
-          className={`${iconClasses} ml-1 flex-shrink-0 rounded-full hover:bg-on-surface/8 focus:bg-on-surface/12 focus:outline-none focus:ring-0`}
-          onClick={(e) => {
+          className={`${iconClasses} ml-1 flex-shrink-0 rounded-full hover:bg-on-surface/8 focus:bg-on-surface/12 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0`}
+          onClick={e => {
             e.stopPropagation();
             onDelete();
           }}

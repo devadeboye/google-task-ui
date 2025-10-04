@@ -35,6 +35,7 @@ export default function TaskForm({
   const [isDueToday, setIsDueToday] = useState(false);
   const [isDueTomorrow, setIsDueTomorrow] = useState(false);
   const [isDueLater, setIsDueLater] = useState(false);
+  const [timeSectionFocused, setTimeSectionFocused] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
   // Form state
@@ -62,16 +63,16 @@ export default function TaskForm({
     }
   }, [focused]);
 
-  // Only cancel when both textareas lose focus
+  // Only cancel when both textareas and time section lose focus
   useEffect(() => {
-    if (!titleFocused && !detailsFocused) {
+    if (!titleFocused && !detailsFocused && !timeSectionFocused) {
       const timer = setTimeout(() => {
         onCancel();
       }, 200); // Small delay to allow for quick navigation between fields
 
       return () => clearTimeout(timer);
     }
-  }, [titleFocused, detailsFocused, onCancel]);
+  }, [titleFocused, detailsFocused, timeSectionFocused, onCancel]);
 
   return (
     <form
@@ -145,12 +146,17 @@ export default function TaskForm({
       </div>
 
       {/* Time */}
-      <div className="flex gap-2 pl-11 items-center justify-between">
+      <div
+        className="flex gap-2 pl-11 items-center justify-between"
+        onMouseDown={() => setTimeSectionFocused(true)}
+        onBlur={() => setTimeSectionFocused(false)}
+        onFocus={() => setTimeSectionFocused(true)}
+      >
         <div className="flex gap-2">
           <Chip
             variant="outlined"
             size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300' : ''}`}
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueToday}
             onClick={() => setIsDueToday(true)}
             onDelete={isDueToday ? () => setIsDueToday(false) : undefined}
@@ -161,7 +167,7 @@ export default function TaskForm({
           <Chip
             variant="outlined"
             size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300' : ''}`}
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueTomorrow}
             onClick={() => setIsDueTomorrow(true)}
             onDelete={isDueTomorrow ? () => setIsDueTomorrow(false) : undefined}
@@ -172,7 +178,7 @@ export default function TaskForm({
           <Chip
             variant="outlined"
             size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300' : ''}`}
+            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueLater}
             onClick={() => setIsDueLater(true)}
             onDelete={isDueLater ? () => setIsDueLater(false) : undefined}
