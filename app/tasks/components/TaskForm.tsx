@@ -1,17 +1,12 @@
 import IconButton from '@/components/ui/IconButton';
-import {
-  AlignLeft,
-  CalendarPlus,
-  Circle,
-  MoreVertical,
-  Repeat2,
-  Star,
-  X,
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Repeat2 } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import Chip from '../../../components/ui/Chip';
 import { Task } from '../../../lib/types/task.type';
+import TaskFormActions from './TaskFormActions';
+import TaskFormCalendar from './TaskFormCalendar';
+import TaskFormDateChips from './TaskFormDateChips';
+import TaskFormInputs from './TaskFormInputs';
 
 interface TaskFormProps {
   focused: boolean;
@@ -43,7 +38,6 @@ export default function TaskForm({
   const [timeSectionFocused, setTimeSectionFocused] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -62,31 +56,39 @@ export default function TaskForm({
     }
   };
 
-  const handleInputChange = (field: 'title' | 'details', value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const handleInputChange = useCallback(
+    (field: 'title' | 'details', value: string) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    },
+    []
+  );
 
   // Date handling functions
-  const getToday = () => {
+  const getToday = useCallback(() => {
     const today = new Date();
     return today.toISOString().split('T')[0];
-  };
+  }, []);
 
-  const getTomorrow = () => {
+  const getTomorrow = useCallback(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().split('T')[0];
-  };
+  }, []);
 
-  const handleDateSelect = (date: string | null) => {
+  const handleDateSelect = useCallback((date: string | null) => {
     setFormData(prev => ({ ...prev, dueDate: date }));
 
     // Update chip states
-    if (date === getToday()) {
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    if (date === today) {
       setIsDueToday(true);
       setIsDueTomorrow(false);
       setIsDueLater(false);
-    } else if (date === getTomorrow()) {
+    } else if (date === tomorrowStr) {
       setIsDueToday(false);
       setIsDueTomorrow(true);
       setIsDueLater(false);
@@ -101,14 +103,14 @@ export default function TaskForm({
     }
 
     setShowCalendar(false);
-  };
+  }, []);
 
-  const clearDueDate = () => {
+  const clearDueDate = useCallback(() => {
     setFormData(prev => ({ ...prev, dueDate: null }));
     setIsDueToday(false);
     setIsDueTomorrow(false);
     setIsDueLater(false);
-  };
+  }, []);
 
   // Auto-focus title textarea when form appears
   useEffect(() => {
@@ -119,34 +121,30 @@ export default function TaskForm({
 
   // Only cancel when both textareas and time section lose focus
   useEffect(() => {
-    if (!titleFocused && !detailsFocused && !timeSectionFocused) {
+    if (
+      !titleFocused &&
+      !detailsFocused &&
+      !timeSectionFocused &&
+      !showCalendar
+    ) {
       const timer = setTimeout(() => {
         onCancel();
       }, 200); // Small delay to allow for quick navigation between fields
 
       return () => clearTimeout(timer);
     }
-  }, [titleFocused, detailsFocused, timeSectionFocused, onCancel]);
+  }, [
+    titleFocused,
+    detailsFocused,
+    timeSectionFocused,
+    showCalendar,
+    onCancel,
+  ]);
 
-  // Close calendar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        calendarRef.current &&
-        !calendarRef.current.contains(event.target as Node)
-      ) {
-        setShowCalendar(false);
-      }
-    };
-
-    if (showCalendar) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showCalendar]);
+  const handleCloseCalendar = useCallback(() => {
+    setShowCalendar(false);
+    setTimeSectionFocused(false);
+  }, []);
 
   return (
     <form
@@ -155,155 +153,55 @@ export default function TaskForm({
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
     >
-      {/* Title */}
       <div className="flex gap-6">
-        <Circle size={20} className="flex-shrink-0" />
-        <textarea
-          ref={titleRef}
-          className="placeholder:text-md text-md placeholder:text-black placeholder:font-light font-normal w-full focus:outline-none resize-none"
-          placeholder="Title"
-          id="title"
-          name="title"
-          rows={1}
-          value={formData.title}
-          onChange={e => handleInputChange('title', e.target.value)}
-          style={{
-            ['fieldSizing' as any]: 'content',
-            minHeight: '1.5rem',
-            maxHeight: '6rem',
-          }}
-          onFocus={() => {
-            setTitleFocused(true);
-          }}
-          onBlur={() => {
-            setTitleFocused(false);
-          }}
+        <TaskFormInputs
+          titleRef={titleRef}
+          formData={formData}
+          onInputChange={handleInputChange}
+          onTitleFocus={() => setTitleFocused(true)}
+          onTitleBlur={() => setTitleFocused(false)}
+          onDetailsFocus={() => setDetailsFocused(true)}
+          onDetailsBlur={() => setDetailsFocused(false)}
         />
-
-        <div className="relative flex items-end gap-2">
-          {(titleFocused || detailsFocused || isHovered) && (
-            <div className="absolute right-0 animate-in fade-in-0 zoom-in-95 duration-200 h-6">
-              <IconButton icon={<MoreVertical size={18} />} size="small" />
-            </div>
-          )}
-          {isHovered && !titleFocused && !detailsFocused && (
-            <div className="absolute right-10 animate-in fade-in-0 zoom-in-95 duration-200 h-6">
-              <IconButton icon={<Star size={18} />} size="small" />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="flex gap-2 pl-11">
-        <AlignLeft size={18} className="flex-shrink-0" />
-        <textarea
-          className="placeholder:text-xs text-xs placeholder:text-black placeholder:font-light font-light w-full focus:outline-none resize-none"
-          placeholder="Details"
-          id="details"
-          name="details"
-          rows={1}
-          value={formData.details}
-          onChange={e => handleInputChange('details', e.target.value)}
-          style={{
-            ['fieldSizing' as any]: 'content',
-            minHeight: '1.5rem',
-            maxHeight: '6rem',
-          }}
-          onFocus={() => {
-            setDetailsFocused(true);
-          }}
-          onBlur={() => {
-            setDetailsFocused(false);
-          }}
-        ></textarea>
+        <TaskFormActions
+          titleFocused={titleFocused}
+          detailsFocused={detailsFocused}
+          isHovered={isHovered}
+        />
       </div>
 
       {/* Time */}
-      <div
-        className="relative flex gap-2 pl-11 items-center justify-between"
-        onMouseDown={() => setTimeSectionFocused(true)}
-        onBlur={() => setTimeSectionFocused(false)}
-        onFocus={() => setTimeSectionFocused(true)}
-      >
-        <div className="flex gap-2">
-          <Chip
-            variant="outlined"
-            size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300/70! border-gray-300!' : ''}`}
-            selected={isDueToday}
-            onClick={() => handleDateSelect(getToday())}
-            onDelete={isDueToday ? clearDueDate : undefined}
-          >
-            <span>Today</span>
-          </Chip>
-
-          <Chip
-            variant="outlined"
-            size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300/70! border-gray-300!' : ''}`}
-            selected={isDueTomorrow}
-            onClick={() => handleDateSelect(getTomorrow())}
-            onDelete={isDueTomorrow ? clearDueDate : undefined}
-          >
-            <span>Tomorrow</span>
-          </Chip>
-
-          <Chip
-            variant="outlined"
-            size="small"
-            className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300/70! border-gray-300!' : ''}`}
-            selected={isDueLater}
-            onClick={() => setShowCalendar(true)}
-            onDelete={isDueLater ? clearDueDate : undefined}
-          >
-            <CalendarPlus size={18} />
-          </Chip>
-        </div>
-
-        <IconButton icon={<Repeat2 size={20} color="black" />} size="medium" />
-      </div>
-
-      {/* Calendar Modal */}
-      {showCalendar && (
+      <div className="relative">
         <div
-          ref={calendarRef}
-          className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-2"
+          className="flex gap-2 pl-11 items-center justify-between"
+          onMouseDown={() => setTimeSectionFocused(true)}
+          onFocus={() => setTimeSectionFocused(true)}
         >
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-900">
-              Select Due Date
-            </h3>
-            <button
-              onClick={() => setShowCalendar(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X size={16} />
-            </button>
-          </div>
-          <input
-            type="date"
-            value={formData.dueDate || ''}
-            onChange={e => handleDateSelect(e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            min={getToday()}
+          <TaskFormDateChips
+            isDueToday={isDueToday}
+            isDueTomorrow={isDueTomorrow}
+            isDueLater={isDueLater}
+            formData={formData}
+            onSelectToday={() => handleDateSelect(getToday())}
+            onSelectTomorrow={() => handleDateSelect(getTomorrow())}
+            onShowCalendar={() => setShowCalendar(true)}
+            onClearDate={clearDueDate}
           />
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={() => handleDateSelect(null)}
-              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
-            >
-              Clear
-            </button>
-            <button
-              onClick={() => setShowCalendar(false)}
-              className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Done
-            </button>
-          </div>
+
+          <IconButton
+            icon={<Repeat2 size={20} color="black" />}
+            size="medium"
+          />
         </div>
-      )}
+
+        <TaskFormCalendar
+          showCalendar={showCalendar}
+          dueDate={formData.dueDate}
+          onClose={handleCloseCalendar}
+          onDateSelect={handleDateSelect}
+          getToday={getToday}
+        />
+      </div>
     </form>
   );
 }
