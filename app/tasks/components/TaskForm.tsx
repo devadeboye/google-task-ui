@@ -6,6 +6,7 @@ import {
   MoreVertical,
   Repeat2,
   Star,
+  X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -18,7 +19,11 @@ interface TaskFormProps {
   task?: Task; // Optional task for edit mode
   mode?: 'create' | 'edit';
   className?: string;
-  onSave?: (taskData: { title: string; details: string }) => void;
+  onSave?: (taskData: {
+    title: string;
+    details: string;
+    dueDate: string | null;
+  }) => void;
 }
 
 export default function TaskForm({
@@ -36,24 +41,73 @@ export default function TaskForm({
   const [isDueTomorrow, setIsDueTomorrow] = useState(false);
   const [isDueLater, setIsDueLater] = useState(false);
   const [timeSectionFocused, setTimeSectionFocused] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
     title: task?.title || '',
     details: task?.description || '',
+    dueDate: task?.dueDate
+      ? new Date(task.dueDate).toISOString().split('T')[0]
+      : null,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.title.trim()) {
       onSave(formData);
-      setFormData({ title: '', details: '' });
+      setFormData({ title: '', details: '', dueDate: null });
     }
   };
 
   const handleInputChange = (field: 'title' | 'details', value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Date handling functions
+  const getToday = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  const getTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  const handleDateSelect = (date: string | null) => {
+    setFormData(prev => ({ ...prev, dueDate: date }));
+
+    // Update chip states
+    if (date === getToday()) {
+      setIsDueToday(true);
+      setIsDueTomorrow(false);
+      setIsDueLater(false);
+    } else if (date === getTomorrow()) {
+      setIsDueToday(false);
+      setIsDueTomorrow(true);
+      setIsDueLater(false);
+    } else if (date) {
+      setIsDueToday(false);
+      setIsDueTomorrow(false);
+      setIsDueLater(true);
+    } else {
+      setIsDueToday(false);
+      setIsDueTomorrow(false);
+      setIsDueLater(false);
+    }
+
+    setShowCalendar(false);
+  };
+
+  const clearDueDate = () => {
+    setFormData(prev => ({ ...prev, dueDate: null }));
+    setIsDueToday(false);
+    setIsDueTomorrow(false);
+    setIsDueLater(false);
   };
 
   // Auto-focus title textarea when form appears
@@ -73,6 +127,26 @@ export default function TaskForm({
       return () => clearTimeout(timer);
     }
   }, [titleFocused, detailsFocused, timeSectionFocused, onCancel]);
+
+  // Close calendar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target as Node)
+      ) {
+        setShowCalendar(false);
+      }
+    };
+
+    if (showCalendar) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCalendar]);
 
   return (
     <form
@@ -147,7 +221,7 @@ export default function TaskForm({
 
       {/* Time */}
       <div
-        className="flex gap-2 pl-11 items-center justify-between"
+        className="relative flex gap-2 pl-11 items-center justify-between"
         onMouseDown={() => setTimeSectionFocused(true)}
         onBlur={() => setTimeSectionFocused(false)}
         onFocus={() => setTimeSectionFocused(true)}
@@ -158,8 +232,8 @@ export default function TaskForm({
             size="small"
             className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueToday}
-            onClick={() => setIsDueToday(true)}
-            onDelete={isDueToday ? () => setIsDueToday(false) : undefined}
+            onClick={() => handleDateSelect(getToday())}
+            onDelete={isDueToday ? clearDueDate : undefined}
           >
             <span>Today</span>
           </Chip>
@@ -169,8 +243,8 @@ export default function TaskForm({
             size="small"
             className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueTomorrow}
-            onClick={() => setIsDueTomorrow(true)}
-            onDelete={isDueTomorrow ? () => setIsDueTomorrow(false) : undefined}
+            onClick={() => handleDateSelect(getTomorrow())}
+            onDelete={isDueTomorrow ? clearDueDate : undefined}
           >
             <span>Tomorrow</span>
           </Chip>
@@ -180,8 +254,8 @@ export default function TaskForm({
             size="small"
             className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300/70! border-gray-300!' : ''}`}
             selected={isDueLater}
-            onClick={() => setIsDueLater(true)}
-            onDelete={isDueLater ? () => setIsDueLater(false) : undefined}
+            onClick={() => setShowCalendar(true)}
+            onDelete={isDueLater ? clearDueDate : undefined}
           >
             <CalendarPlus size={18} />
           </Chip>
@@ -189,6 +263,47 @@ export default function TaskForm({
 
         <IconButton icon={<Repeat2 size={20} color="black" />} size="medium" />
       </div>
+
+      {/* Calendar Modal */}
+      {showCalendar && (
+        <div
+          ref={calendarRef}
+          className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-2"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-gray-900">
+              Select Due Date
+            </h3>
+            <button
+              onClick={() => setShowCalendar(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <input
+            type="date"
+            value={formData.dueDate || ''}
+            onChange={e => handleDateSelect(e.target.value || null)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            min={getToday()}
+          />
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => handleDateSelect(null)}
+              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => setShowCalendar(false)}
+              className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
