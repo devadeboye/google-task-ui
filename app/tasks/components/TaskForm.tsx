@@ -3,10 +3,17 @@ import { Repeat2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Task } from '../../../lib/types/task.type';
+import CustomCalendar from './CustomCalendar/index';
 import TaskFormActions from './TaskFormActions';
-import TaskFormCalendar from './TaskFormCalendar';
 import TaskFormDateChips from './TaskFormDateChips';
 import TaskFormInputs from './TaskFormInputs';
+
+const toLocalISOString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 interface TaskFormProps {
   focused: boolean;
@@ -43,9 +50,7 @@ export default function TaskForm({
   const [formData, setFormData] = useState({
     title: task?.title || '',
     details: task?.description || '',
-    dueDate: task?.dueDate
-      ? new Date(task.dueDate).toISOString().split('T')[0]
-      : null,
+    dueDate: task?.dueDate ? toLocalISOString(new Date(task.dueDate)) : null,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,23 +71,23 @@ export default function TaskForm({
   // Date handling functions
   const getToday = useCallback(() => {
     const today = new Date();
-    return today.toISOString().split('T')[0];
+    return toLocalISOString(today);
   }, []);
 
   const getTomorrow = useCallback(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    return toLocalISOString(tomorrow);
   }, []);
 
   const handleDateSelect = useCallback((date: string | null) => {
     setFormData(prev => ({ ...prev, dueDate: date }));
 
     // Update chip states
-    const today = new Date().toISOString().split('T')[0];
+    const today = toLocalISOString(new Date());
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const tomorrowStr = toLocalISOString(tomorrow);
 
     if (date === today) {
       setIsDueToday(true);
@@ -146,6 +151,18 @@ export default function TaskForm({
     setTimeSectionFocused(false);
   }, []);
 
+  const handleSelectToday = useCallback(
+    () => handleDateSelect(getToday()),
+    [handleDateSelect, getToday]
+  );
+
+  const handleSelectTomorrow = useCallback(
+    () => handleDateSelect(getTomorrow()),
+    [handleDateSelect, getTomorrow]
+  );
+
+  const handleShowCalendar = useCallback(() => setShowCalendar(true), []);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -181,10 +198,10 @@ export default function TaskForm({
             isDueToday={isDueToday}
             isDueTomorrow={isDueTomorrow}
             isDueLater={isDueLater}
-            formData={formData}
-            onSelectToday={() => handleDateSelect(getToday())}
-            onSelectTomorrow={() => handleDateSelect(getTomorrow())}
-            onShowCalendar={() => setShowCalendar(true)}
+            dueDate={formData.dueDate}
+            onSelectToday={handleSelectToday}
+            onSelectTomorrow={handleSelectTomorrow}
+            onShowCalendar={handleShowCalendar}
             onClearDate={clearDueDate}
           />
 
@@ -194,12 +211,14 @@ export default function TaskForm({
           />
         </div>
 
-        <TaskFormCalendar
+        <CustomCalendar
           showCalendar={showCalendar}
-          dueDate={formData.dueDate}
+          selectedDate={formData.dueDate ? new Date(formData.dueDate) : null}
           onClose={handleCloseCalendar}
-          onDateSelect={handleDateSelect}
-          getToday={getToday}
+          onDateSelect={date =>
+            handleDateSelect(date ? toLocalISOString(date) : null)
+          }
+          minDate={new Date()}
         />
       </div>
     </form>

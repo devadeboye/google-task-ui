@@ -1,23 +1,23 @@
 import { CalendarPlus } from 'lucide-react';
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import Chip from '../../../components/ui/Chip';
 
 interface TaskFormDateChipsProps {
   isDueToday: boolean;
   isDueTomorrow: boolean;
   isDueLater: boolean;
-  formData: { dueDate: string | null };
+  dueDate: string | null;
   onSelectToday: () => void;
   onSelectTomorrow: () => void;
   onShowCalendar: () => void;
   onClearDate: () => void;
 }
 
-export default function TaskFormDateChips({
+function TaskFormDateChips({
   isDueToday,
   isDueTomorrow,
   isDueLater,
-  formData,
+  dueDate,
   onSelectToday,
   onSelectTomorrow,
   onShowCalendar,
@@ -40,7 +40,7 @@ export default function TaskFormDateChips({
       <Chip
         variant="outlined"
         size="small"
-        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300/70! border-gray-300!' : ''}`}
+        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueToday ? 'bg-gray-300/70! border-gray-300!' : ''} ${(!isDueToday && isDueTomorrow) || isDueLater ? 'hidden!' : ''}`}
         selected={isDueToday}
         onClick={onSelectToday}
         onDelete={isDueToday ? onClearDate : undefined}
@@ -51,7 +51,7 @@ export default function TaskFormDateChips({
       <Chip
         variant="outlined"
         size="small"
-        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300/70! border-gray-300!' : ''}`}
+        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueTomorrow ? 'bg-gray-300/70! border-gray-300!' : ''} ${(!isDueTomorrow && isDueToday) || isDueLater ? 'hidden!' : ''}`}
         selected={isDueTomorrow}
         onClick={onSelectTomorrow}
         onDelete={isDueTomorrow ? onClearDate : undefined}
@@ -62,13 +62,13 @@ export default function TaskFormDateChips({
       <Chip
         variant="outlined"
         size="small"
-        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300/70! border-gray-300!' : ''}`}
+        className={`bg-white border-gray-300 font-normal hover:bg-focus ${isDueLater ? 'bg-gray-300/70! border-gray-300!' : ''} ${(!isDueLater && isDueToday) || isDueTomorrow ? 'hidden!' : ''}`}
         selected={isDueLater}
         onClick={onShowCalendar}
         onDelete={isDueLater ? onClearDate : undefined}
       >
-        {isDueLater && formData.dueDate ? (
-          <span className="text-xs">{formatDateForDisplay(formData.dueDate)}</span>
+        {isDueLater && dueDate ? (
+          <span className="text-xs">{formatDateForDisplay(dueDate)}</span>
         ) : (
           <CalendarPlus size={18} />
         )}
@@ -76,4 +76,6 @@ export default function TaskFormDateChips({
     </div>
   );
 }
+
+export default memo(TaskFormDateChips);
 
