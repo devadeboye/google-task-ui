@@ -16,6 +16,7 @@ export default function TaskboardEmptyState({
         height={128}
         priority // Preload the image
         className="object-contain"
+        style={{ height: 'auto' }}
       />
       <div className="text-lg">No tasks yet</div>
       <p className="text-sm">

@@ -21,7 +21,7 @@ export default function TaskFormInputs({
   onDetailsBlur,
 }: TaskFormInputsProps) {
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {/* Title */}
       <div className="flex gap-6">
         <Circle size={20} className="flex-shrink-0" />
@@ -64,7 +64,7 @@ export default function TaskFormInputs({
           onBlur={onDetailsBlur}
         />
       </div>
-    </>
+    </div>
   );
 }
 

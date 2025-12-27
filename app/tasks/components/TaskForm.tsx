@@ -170,7 +170,7 @@ export default function TaskForm({
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
     >
-      <div className="flex gap-6">
+      <div className="flex gap-6 justify-between">
         <TaskFormInputs
           titleRef={titleRef}
           formData={formData}
