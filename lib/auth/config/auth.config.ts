@@ -52,8 +52,14 @@ export const NEXTAUTH_CONFIG = {
     // Session callback - send properties to client
     async session({ session, token }: any) {
       if (token.error === 'RefreshAccessTokenError') {
-        // Force logout on refresh error
-        return null;
+        // Return session with error to trigger client-side handling
+        return {
+          ...session,
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          error: 'RefreshAccessTokenError',
+        };
       }
 
       return {
@@ -65,7 +71,6 @@ export const NEXTAUTH_CONFIG = {
         },
         accessToken: token.accessToken,
         refreshToken: token.refreshToken,
-        error: token.error,
       };
     },
   },

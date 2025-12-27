@@ -12,8 +12,17 @@ export default withAuth(
     }
 
     // If user is not authenticated and trying to access protected routes
-    if (!token && pathname.startsWith('/tasks/')) {
+    if (!token && (pathname.startsWith('/tasks') || pathname === '/tasks')) {
       return NextResponse.redirect(new URL('/auth/login', req.url));
+    }
+
+    // Handle root path - redirect to tasks if authenticated, login if not
+    if (pathname === '/') {
+      if (token) {
+        return NextResponse.redirect(new URL('/tasks', req.url));
+      } else {
+        return NextResponse.redirect(new URL('/auth/login', req.url));
+      }
     }
 
     return NextResponse.next();
@@ -22,17 +31,17 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
-        
+
         // Allow access to auth pages without token
         if (pathname.startsWith('/auth/')) {
           return true;
         }
-        
+
         // Require token for protected routes
-        if (pathname.startsWith('/tasks/')) {
+        if (pathname.startsWith('/tasks') || pathname === '/tasks') {
           return !!token;
         }
-        
+
         // Allow access to public routes
         return true;
       },
